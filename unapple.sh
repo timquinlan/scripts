@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Quick and dirty script
+# If you export photos/videos out of iPhoto it puts them in directories
+# based on the date they were taken, and those directories contain 
+# generic IMG1234.jpg type names.
+# Run this script from within the Date directories and give a descriptive
+# prefix.  This will then move them to ~/Videos or ~/Pictures
+
 if [ -z $1 ]
 then
 	echo "must provide a prefix"
