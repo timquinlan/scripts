@@ -1,0 +1,56 @@
+#!/bin/sh 
+
+help () {
+	echo " This script accepts piped STDIN and can transform it to either horizontal or a vertical format."
+	echo " By default it will try to determine if STDIN is single or multiple lines.  If it detects only one line, it will transform it to vertical.  If it detects multiplt lines it will transform it to horizontal."
+	echo " If your input is a mix of many single lines you can use the -v or -h switches to force vertical or horizontal"
+
+	echo
+	echo " Options are:"
+	echo "  -h           Force transform to horizontal"
+	echo "  -v           Force transform to vertical"
+	echo "  --version    Show version"
+	echo "  --help       This help"
+	exit
+}
+
+version () {
+	echo $version
+	exit
+}
+
+verticalizer () {
+	for i in $s
+	do 
+		echo $i
+	done
+}
+
+horizontalizer () {
+	echo $s
+}
+
+test_for_newlines () {
+	ret=$(echo "$s" | wc -l)
+	if [ $ret -eq 1 ]
+	then
+		verticalizer
+	else
+		horizontalizer
+	fi
+}
+
+version="0.1"
+
+if [ -z $1 ]
+then
+	s=$(< /dev/stdin)
+	test_for_newlines 
+else
+	case $1 in
+		--help) help;;
+		--version) version;;
+		-v) s=$(< /dev/stdin); verticalizer;;
+		-h) s=$(< /dev/stdin); horizontalizer;;
+	esac
+fi
