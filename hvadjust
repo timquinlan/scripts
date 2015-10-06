@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/bash  
 
 help () {
 	echo " This script accepts piped STDIN and can transform it to either horizontal or a vertical format."
