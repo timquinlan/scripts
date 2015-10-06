@@ -30,20 +30,21 @@ version="0.1"
 if [ -z $1 ]
 then
 	s=$(< /dev/stdin)
-	ret=$(echo "$s" | wc -l)
-
-	if [ $ret -eq 1 ]
-	then
-		verticalizer
-	else
-		horizontalizer
-	fi
+	line_num=$(echo "$s" | wc -l)
+	
+	case $line_num in
+		0) help;;
+		1) verticalizer;;
+		*) horizontalizer;;
+	esac
 else
 	case $1 in
 		--help) help;;
 		--version) echo $version;;
-		-v) s=$(< /dev/stdin); verticalizer;;
-		-h) s=$(< /dev/stdin); horizontalizer;;
+		-v) s=$(< /dev/stdin) 
+		    verticalizer;;
+		-h) s=$(< /dev/stdin)
+		    horizontalizer;;
 		 *) help;;
 	esac
 fi
