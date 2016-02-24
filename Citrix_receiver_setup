@@ -1,7 +1,12 @@
 In newer versions of Citrix Receiver for Linux (version 13??) you need to do some manual configuration after you install:
 
-1. install full plugin
-2. firefox Add-ons -> Plugins and set Citrix Receiver to "Always Activate"
-3. firefox Preferences -> Advanced -> Certificates -> View Certificates 
-4. export VeriSignClass3PublicPrimaryCertificationAuthority-G5 to a file
+1. install full plugin 
+	dpkg -i warns on some deps.  Run apt-get -f install
+	dnf install works 
+2. Configure plugin to run in firefox:
+	 Add-ons -> Plugins 
+	Set Citrix Receiver to "Always Activate"
+3. Get copy of Verisign cert from firefox:
+	 Preferences -> Advanced -> Certificates -> View Certificates 
+	export VeriSignClass3PublicPrimaryCertificationAuthority-G5 to a file
 5. copy VeriSignClass3PublicPrimaryCertificationAuthority-G5 to /opt/Citrix/ICAClient/keystore/cacerts/ 
