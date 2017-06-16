@@ -10,3 +10,4 @@ In newer versions of Citrix Receiver for Linux (version 13??) you need to do som
 	 Preferences -> Advanced -> Certificates -> View Certificates 
 	export VeriSignClass3PublicPrimaryCertificationAuthority-G5 to a file
 5. copy VeriSignClass3PublicPrimaryCertificationAuthority-G5 to /opt/Citrix/ICAClient/keystore/cacerts/ 
+.
