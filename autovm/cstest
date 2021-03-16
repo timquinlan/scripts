@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Rick, this is a POC script for the testing scenario we discussed 
+# it is pretty straight forward, grab an image, make a vm of it, wait for it
+# to connect to the network, ssh in and do things....
+# the only things you should **have** to change is the sshkey info and url 
+# for the base image
+
+# can name it whatever you like, but if you're doing multiples you want something unique
 name=$(uuidgen)
 sshid="/home/quinlan/.ssh/demo"
 sshkey="/home/quinlan/.ssh/demo.pub"
@@ -7,7 +14,15 @@ disk="/tmp/$name.qcow2"
 memory=2048
 vcpus=2
 network=default
+# used a local copy of the latest CentOS stream image
+#   https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210210.0.x86_64.qcow2
 url="http://web.local/images/latest.qcow2"
+
+# put what ever commands you need to prep the vm here, 
+# these are just dummy cmds to produce dl some stuff from git 
+# and make a lot of output you can see
+# make sure you escape quote here, if we progress with this
+# i can make it upload a script to run
 
 prep_commands="
 dnf -y install git nginx
@@ -19,6 +34,8 @@ find .
 sleep 20
 "
 
+# dummy commands, this is where you would do your unit test, determine if the 
+# test was a success or not, and go from there
 test_commands="
 echo 'these are the test commands'
 echo
@@ -71,6 +88,7 @@ do
   count=$(($count + 1))
 done
 
+#comment these out if you want to keep the test vm around
 virsh destroy $name
 virsh undefine $name
 rm $disk
