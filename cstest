@@ -1,0 +1,76 @@
+#!/bin/sh
+
+name=$(uuidgen)
+sshid="/home/quinlan/.ssh/demo"
+sshkey="/home/quinlan/.ssh/demo.pub"
+disk="/tmp/$name.qcow2"
+memory=2048
+vcpus=2
+network=default
+url="http://web.local/images/latest.qcow2"
+
+prep_commands="
+dnf -y install git nginx
+
+mkdir test
+cd test
+git clone https://www.github.com/timquinlan/OLF2019
+find .
+sleep 20
+"
+
+test_commands="
+echo 'these are the test commands'
+echo
+"
+
+wget -O $disk $url
+
+virt-install --noautoconsole \
+             --name $name \
+	     --memory $memory \
+	     --vcpus $vcpus \
+	     --disk $disk,bus=sata \
+	     --import \
+	     --network $network \
+	     --cloud-init ssh-key=$sshkey
+
+count=0
+max=600
+echo "Waiting for host to connect to network (max $max)"
+while [ $count -lt $max ]
+do
+  sleep 1
+  #is there a cleaner way to get the VMs IP?
+  ip=$(virsh --quiet domifaddr $name|awk '{print $NF}'|awk -F\/ '{print $1}')
+  result=$(echo $ip | wc -c)
+  if [ $result -gt 1 ]
+  then
+    count=0
+    max=600
+    echo "Host is up with IP: $ip"
+    echo "Waiting for host to start sshd (max $max)"
+    echo
+    while [ $count -lt $max ]
+    do
+      sleep 1
+      nc -z $ip 22 
+      if [ $? -eq 0 ]
+      then
+        echo "Host has opened ssh"
+        echo
+        echo "Logging in to host to perform build and unit test"
+        ssh -o StrictHostKeyChecking=no -i $sshid $ip "$prep_commands"
+        ssh -o StrictHostKeyChecking=no -i $sshid $ip "$test_commands"
+        break
+      fi
+      count=$(($count + 1))
+    done
+    break
+  fi
+  count=$(($count + 1))
+done
+
+virsh destroy $name
+virsh undefine $name
+rm $disk
