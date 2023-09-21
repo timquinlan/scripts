@@ -1,0 +1,25 @@
+#!/bin/sh
+
+#usage 
+# ssh $(this) remotehost
+
+if [ $# -eq 0 ]
+then
+  ports=$(seq 5900 5915)
+else
+  while getopts r:p: rps
+  do
+    case $rps in
+      r) ports=$(seq $2 $3);;
+      p) shift
+         ports=$@;;
+    esac
+  done
+fi 
+
+for i in $ports
+do
+  #echo -n "-L $i:localhost:$i "
+  echo "-L $i:localhost:$i "
+done
+echo
